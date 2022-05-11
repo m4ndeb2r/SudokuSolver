@@ -1,8 +1,6 @@
 from unit import Unit
 from cell import Cell
 from single_unit_solver import SingleUnitSolver
-from vertical_block_solver import VerticalBlockSolver
-from horizontal_block_solver import HorizontalBlockSolver
 from bidirectional_block_solver import BidirectionalBlockSolver
 
 
@@ -80,14 +78,6 @@ class Board(object):
             continue_solving = False
             for unit in self.__units:
                 continue_solving = SingleUnitSolver.solve(unit) or continue_solving
-            for unit in self.__units:
-                if unit.is_block_unit():
-                    continue_solving = HorizontalBlockSolver.solve(unit) or continue_solving
-                    continue_solving = SingleUnitSolver.solve(unit) or continue_solving
-            for unit in self.__units:
-                if unit.is_block_unit():
-                    continue_solving = VerticalBlockSolver.solve(unit) or continue_solving
-                    continue_solving = SingleUnitSolver.solve(unit) or continue_solving
             for unit in self.__units:
                 if unit.is_block_unit():
                     continue_solving = BidirectionalBlockSolver.solve(unit) or continue_solving
