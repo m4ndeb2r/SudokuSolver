@@ -4,72 +4,25 @@ print("\n\n*** SUDOKU ***\n")
 print("Enter initial board settings, row by row.")
 print("Enter the digit of a cell, or a '.' for an empty cell.")
 print("Every row contains 9 cells, and the board contains 9 rows.")
-print("For example, a row might be entered as: ..5..6.8.\n")
+print("For example, a row might be entered as: ..5..6.8.")
+print("Or an initial board as: ")
+print("\t.7.1.....")
+print("\t.......5.")
+print("\t..6...4.3")
+print("\t.........")
+print("\t5...4.82.")
+print("\t..963...4")
+print("\t...32....")
+print("\t28.7.....")
+print("\t65......9\n")
 
 # Create a new Sudoku board
 board = Board()
 
 # Let user enter the initial settings of the board, and update the board
 # An exception is raised when illegal input is detected.
-# TEMPORARILY HARDCODED:
-rows = [
-    '.7.1.....',
-    '.......5.',
-    '..6...4.3',
-    '.........',
-    '5...4.82.',
-    '..963...4',
-    '...32....',
-    '28.7.....',
-    '65......9'
-]  # <- TEMPORARY
-rows = [
-    '.........',
-    '......1..',
-    '.....1...',
-    '1........',
-    '.........',
-    '.........',
-    '.1.......',
-    '.........',
-    '.........'
-]  # <- TEMPORARY
-rows = [
-    '......234',
-    '........5',
-    '.....1789',
-    '1........',
-    '.........',
-    '.........',
-    '257......',
-    '3.9......',
-    '4.6......'
-]  # <- TEMPORARY
-rows = [
-    '......234',
-    '........5',
-    '..5...789',
-    '1........',
-    '.........',
-    '.........',
-    '257......',
-    '3.9......',
-    '4.6......'
-]  # <- TEMPORARY
-rows = [
-    '......1..',
-    '.........',
-    '.........',
-    '.........',
-    '.........',
-    '........3',
-    '1........',
-    '........5',
-    '......234'
-]  # <- TEMPORARY
 for row_index in range(0, 9):
-    row = rows[row_index] # <- TEMPORARY
-    # input(f"Enter row {row_index + 1}: ")
+    row = input(f"Enter row {row_index + 1}: ")
     row_values = list(row)
     if len(row_values) != 9:
         raise Exception("Each row must contain 9 cells.")
@@ -90,5 +43,9 @@ print('-' * 27)
 board.solve()
 board.print()
 print('-' * 27)
-board.get_block_units()[8].get_horizontal_neighbours()[1].print()
+
+if board.is_solved():
+    print("Solved it!!")
+else:
+    print("Sadly, I wasn't able to solve the puzzle.")
 

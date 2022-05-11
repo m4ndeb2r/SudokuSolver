@@ -76,12 +76,16 @@ class Board(object):
         continue_solving = True
         while not self.is_solved() and continue_solving:
             continue_solving = False
+            # Try to solve the units (rows, columns and blocks) indiviually
             for unit in self.__units:
                 continue_solving = SingleUnitSolver.solve(unit) or continue_solving
+            # Try to solve the block units by comparison with other blocks
             for unit in self.__units:
                 if unit.is_block_unit():
                     continue_solving = BidirectionalBlockSolver.solve(unit) or continue_solving
                     continue_solving = SingleUnitSolver.solve(unit) or continue_solving
+            # Check if nothing went wrong ...
+            self.validate()
 
     def validate(self):
         """Validates the board. Checks for any illegal characters or illegal combinations"""
