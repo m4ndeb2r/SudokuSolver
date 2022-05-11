@@ -12,7 +12,7 @@ class Cell(object):
             raise Exception(f"Number of possible values for this cell is incorrect ({length}).")
         for possible_value in self.__possible_values:
             if possible_value not in range(1, 10):
-                raise Exception(f"Value {possible_value} is not a valid value for this cell")
+                raise Exception(f"Value {possible_value} is not a valid value for this cell.")
 
     def has_possible_value(self, value):
         """Returns if the specified value is a possible solution for the cell."""
@@ -22,6 +22,8 @@ class Cell(object):
         """Removes the specified value from the list of possible values (if it exists).
         Returns True on success, or False otherwise."""
         if value in self.__possible_values:
+            if len(self.__possible_values) == 1:
+                raise Exception("Unexpected program error: attempting to remove a value from a solved cell.")
             self.__possible_values.remove(value)
             return True
         return False

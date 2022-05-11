@@ -10,16 +10,17 @@ class Unit(object):
             raise Exception(f"Illegal unit type: {type}. Allowed values are: {self.__allowed_types}.")
         self.__type = type
 
-    def validate(self):
-        """Validates the unit. Checks for any illegal characters or illegal combinations."""
-        solved_values = []
-        for cell in self.get_cells():
-            cell.validate()
-            if cell.is_solved():
-                solved_value = cell.get_solution()
-                if solved_value in solved_values:
-                    raise Exception(f"Value {solved_value} not unique in unit.")
-                solved_values.append(solved_value)
+    def is_block_unit(self):
+        """Returns if the unit is a block unit."""
+        return self.__type == "block"
+
+    def is_row_unit(self):
+        """Returns if the unit is a row unit."""
+        return self.__type == "row"
+
+    def is_column_unit(self):
+        """Returns if the unit is a column unit."""
+        return self.__type == "column"
 
     def get_cell_keys(self):
         """Returns the keys referring to the cells in the unit as a list."""
@@ -40,27 +41,6 @@ class Unit(object):
         if key in self.__cell_keys:
             return self.__board.get_cell(key)
         return None
-
-    def get_key_of_solved_cell_with_value(self, value):
-        """Returns the key of the cell that is solved with the specified value, or None if such a
-        cell is not present in the unit."""
-        for key in self.__cell_keys:
-            cell = self.__board.get_cell(key)
-            if cell.is_solved() and cell.has_possible_value(value):
-                return key
-        return None
-
-    def is_block_unit(self):
-        """Returns if the unit is a block unit."""
-        return self.__type == "block"
-
-    def is_row_unit(self):
-        """Returns if the unit is a row unit."""
-        return self.__type == "row"
-
-    def is_column_unit(self):
-        """Returns if the unit is a column unit."""
-        return self.__type == "column"
 
     def get_horizontal_neighbours(self):
         """Returns the two block units at the left and/or right from the current block unit.
@@ -105,22 +85,46 @@ class Unit(object):
                 return True
         return False
 
-    def print(self):
-        """Prints a string representation of itself to the console."""
-        start_row = int(self.__cell_keys[0][3:4])
-        start_col = int(self.__cell_keys[0][1:2])
-        if self.is_block_unit():
-            for y in range(0, 3):
-                for x in range(0, 3):
-                    print(self.__board.get_cell(f"x{start_col + x}y{start_row + y}").to_string(), end='')
-                print('')
+    def get_distinct_row_containing_possible_val(self, value):
+        keys = self.__get_keys_of_cells_with_value(value)
+        # Not found? Return None
+        if len(keys) == 0:
+            return None
+        # Found? Are they on the same row (based on the key)?
+        # Then the row index within the unit is returned, or None otherwise
+        for i in range(0, len(keys)):
+            if keys[i][2:4] != keys[0][2:4]:
+                return None
+        return (int(keys[0][3:4]) - 1) % 3
 
-        if self.is_row_unit():
-            for x in range(1, 9):
-                print(self.__board.get_cell(f"x{start_col + x}y{start_row + y}").to_string(), end='')
-            print('')
+    def get_distinct_column_containing_possible_val(self, value):
+        keys = self.__get_keys_of_cells_with_value(value)
+        # Not found? Return None
+        if len(keys) == 0:
+            return None
+        # Found? Are they on the same row (based on the key)?
+        # Then the column index within the unit is returned, or None otherwise
+        for i in range(0, len(keys)):
+            if keys[i][0:2] != keys[0][0:2]:
+                return None
+        return (int(keys[0][1:2]) - 1) % 3
 
-        if self.is_column_unit():
-            for y in range(1, 9):
-                print(self.__board.get_cell(f"x{start_col + x}y{start_row + y}").to_string(), end='')
-            print('')
+    def validate(self):
+        """Validates the unit. Checks for any illegal characters or illegal combinations."""
+        solved_values = []
+        for cell in self.get_cells():
+            cell.validate()
+            if cell.is_solved():
+                solved_value = cell.get_solution()
+                if solved_value in solved_values:
+                    raise Exception(f"Value {solved_value} not unique in unit.")
+                solved_values.append(solved_value)
+
+    def __get_keys_of_cells_with_value(self, value):
+        """Gathers all keys referring to cells containing the specified value as a possible value."""
+        keys = []
+        for key in self.get_cell_keys():
+            if self.get_cell(key).has_possible_value(value):
+                keys.append(key)
+        return keys
+

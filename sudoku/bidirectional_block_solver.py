@@ -10,7 +10,9 @@ class BidirectionalBlockSolver(object):
         if unit.is_solved():
             return updated
 
+        # Get block units left and right from the current block unit
         horizontal_neighbours = unit.get_horizontal_neighbours()
+        # Get block units above and below the current block unit
         vertical_neighbours = unit.get_vertical_neighbours()
 
         for value in range(1, 10):
@@ -18,14 +20,16 @@ class BidirectionalBlockSolver(object):
             if unit.has_solved_cell_with_value(value):
                 continue
 
-            r1_pos = BidirectionalBlockSolver.__get_distinct_row_containing_possible_val(horizontal_neighbours[0], value)
-            r2_pos = BidirectionalBlockSolver.__get_distinct_row_containing_possible_val(horizontal_neighbours[1], value)
-            c1_pos = BidirectionalBlockSolver.__get_distinct_column_containing_possible_val(vertical_neighbours[0], value)
-            c2_pos = BidirectionalBlockSolver.__get_distinct_column_containing_possible_val(vertical_neighbours[1], value)
+            r1_pos = horizontal_neighbours[0].get_distinct_row_containing_possible_val(value)
+            r2_pos = horizontal_neighbours[1].get_distinct_row_containing_possible_val(value)
+            c1_pos = vertical_neighbours[0].get_distinct_column_containing_possible_val(value)
+            c2_pos = vertical_neighbours[1].get_distinct_column_containing_possible_val(value)
 
             # Determine the index of the cell we can solve, based on the info above.
-            r_pos = BidirectionalBlockSolver.__get_solvable_pos(r1_pos, r2_pos)
-            c_pos = BidirectionalBlockSolver.__get_solvable_pos(c1_pos, c2_pos)
+            # Using list comprehension to which position is not in [r1_pos, r2_pos]
+            # (or [c1_pos, c2_pos])
+            r_pos = [x for x in [0, 1, 2] if x not in [r1_pos, r2_pos]]
+            c_pos = [x for x in [0, 1, 2] if x not in [c1_pos, c2_pos]]
 
             # See if some finetuning is necessary: if we do not have a distinct row (r_pos
             # contains > 1 element) and a distinct col (c_pos contains > 1 element), we might
@@ -78,48 +82,3 @@ class BidirectionalBlockSolver(object):
             updated = True
 
         return updated
-
-    @staticmethod
-    def __get_solvable_pos(v1_pos, v2_pos):
-        v_pos = [0, 1, 2]
-        if v1_pos is not None and v1_pos in v_pos:
-            v_pos.remove(v1_pos)
-        if v2_pos is not None and v2_pos in v_pos:
-            v_pos.remove(v2_pos)
-        return v_pos
-
-    @staticmethod
-    def __get_distinct_row_containing_possible_val(unit, value):
-        keys = BidirectionalBlockSolver.__get_keys_of_cells_with_value(unit, value)
-        # Not found? Return None
-        if len(keys) == 0:
-            return None
-        # Found? Are they on the same row (based on the key)?
-        # Then the row index within the unit is returned, or None otherwise
-        for i in range(0, len(keys)):
-            if keys[i][2:4] != keys[0][2:4]:
-                return None
-        return (int(keys[0][3:4]) - 1) % 3
-
-    @staticmethod
-    def __get_distinct_column_containing_possible_val(unit, value):
-        keys = BidirectionalBlockSolver.__get_keys_of_cells_with_value(unit, value)
-        # Not found? Return None
-        if len(keys) == 0:
-            return False
-        # Found? Are they on the same row (based on the key)?
-        # Then the column index within the unit is returned, or None otherwise
-        for i in range(0, len(keys)):
-            if keys[i][0:2] != keys[0][0:2]:
-                return None
-        return (int(keys[0][1:2]) - 1) % 3
-
-    @staticmethod
-    def __get_keys_of_cells_with_value(unit, value):
-        """Gathers all keys referring to cells containing the specified value as a possible value."""
-        keys = []
-        for key in unit.get_cell_keys():
-            if unit.get_cell(key).has_possible_value(value):
-                keys.append(key)
-        return keys
-
