@@ -39,6 +39,9 @@ class Cell(object):
 
     def set_value(self, value):
         """Sets a definitive value for the cell."""
+        int_value = int(value)
+        if int_value < 1 or int_value > 9:
+            raise Exception("Cell can only contain values in range 1 to 9.")
         self.__possible_values = [int(value)]
 
     def is_solved(self):

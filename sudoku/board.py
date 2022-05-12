@@ -75,23 +75,24 @@ class Board(object):
         """Attempts to solve all the units (blocks, rows, columns) on the board.
         Solving will be repeated as long as one or more cells are solved by the
         attempts."""
-        continue_solving = True
-        while not self.is_solved() and continue_solving:
-            continue_solving = False
+        continue_solving = not self.is_solved()
+        while continue_solving:
+            updated = False
             for unit in self.__units:
-                continue_solving = SingleUnitSolver.solve(unit) or continue_solving
-            for unit in self.__units:
-                if unit.is_block_unit():
-                    continue_solving = HorizontalBlockSolver.solve(unit) or continue_solving
-                    continue_solving = SingleUnitSolver.solve(unit) or continue_solving
+                updated = SingleUnitSolver.solve(unit) or updated
             for unit in self.__units:
                 if unit.is_block_unit():
-                    continue_solving = VerticalBlockSolver.solve(unit) or continue_solving
-                    continue_solving = SingleUnitSolver.solve(unit) or continue_solving
+                    updated = HorizontalBlockSolver.solve(unit) or updated
+                    updated = SingleUnitSolver.solve(unit) or updated
             for unit in self.__units:
                 if unit.is_block_unit():
-                    continue_solving = BidirectionalBlockSolver.solve(unit) or continue_solving
-                    continue_solving = SingleUnitSolver.solve(unit) or continue_solving
+                    updated = VerticalBlockSolver.solve(unit) or updated
+                    updated = SingleUnitSolver.solve(unit) or updated
+            for unit in self.__units:
+                if unit.is_block_unit():
+                    updated = BidirectionalBlockSolver.solve(unit) or updated
+                    updated = SingleUnitSolver.solve(unit) or updated
+            continue_solving = updated and not self.is_solved()
 
     def validate(self):
         """Validates the board. Checks for any illegal characters or illegal combinations"""
