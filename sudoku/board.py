@@ -4,6 +4,7 @@ from single_unit_solver import SingleUnitSolver
 from vertical_block_solver import VerticalBlockSolver
 from horizontal_block_solver import HorizontalBlockSolver
 from bidirectional_block_solver import BidirectionalBlockSolver
+from exceptions import SudokuException
 
 
 class Board(object):
@@ -52,7 +53,7 @@ class Board(object):
             if unit.is_block_unit():
                 block_units.append(unit)
         if len(block_units) != 9:
-            raise Exception(f"Unexpected number of block units on the board: {len(block_units)}.")
+            raise SudokuException(f"Unexpected number of block units on the board: {len(block_units)}.")
         return block_units
 
     def get_cell(self, key):

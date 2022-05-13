@@ -1,4 +1,5 @@
 from board import Board
+from exceptions import SudokuException
 
 print("\n\n*** SUDOKU ***\n")
 print("Enter initial board settings, row by row.")
@@ -104,11 +105,11 @@ for row_index in range(0, 9):
     # input(f"Enter row {row_index + 1}: ")
     row_values = list(row)
     if len(row_values) != 9:
-        raise Exception("Each row must contain 9 cells.")
+        raise SudokuException("Each row must contain 9 cells.")
     for col_index in range(0, 9):
         value = row_values[col_index]
         if value not in ('.', '1', '2', '3', '4', '5', '6', '7', '8', '9'):
-            raise Exception(f"Illegal character entered: '{value}'. Enter digits [1-9] or '.' only.")
+            raise SudokuException(f"Illegal character entered: '{value}'. Enter digits [1-9] or '.' only.")
         if value != '.':
             board.set_cell_value(f"x{col_index + 1}y{row_index + 1}", value)
             board.validate()

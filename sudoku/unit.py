@@ -1,13 +1,19 @@
-class Unit(object):
-    __allowed_types = ["block", "row", "column"]
+from exceptions import SudokuException
 
+
+class Unit(object):
     def __init__(self, the_board, cell_keys, type):
+        if type == "block":
+            Unit.__validate_block_keys(cell_keys)
+        elif type == "row":
+            Unit.__validate_row_keys(cell_keys)
+        elif type == "column":
+            Unit.__validate_column_keys(cell_keys)
+        else:
+            raise SudokuException(f"Illegal unit type: '{type}'.")
+
         self.__board = the_board
-        if len(cell_keys) != 9:
-            raise Exception(f"Illegal number of cell_keys: {len(cell_keys)}. Number of cell_keys must be 9.")
         self.__cell_keys = cell_keys
-        if type not in self.__allowed_types:
-            raise Exception(f"Illegal unit type: {type}. Allowed values are: {self.__allowed_types}.")
         self.__type = type
 
     def is_block_unit(self):
@@ -32,7 +38,7 @@ class Unit(object):
         for key in self.__cell_keys:
             cells.append(self.__board.get_cell(key))
         if len(cells) != 9:
-            raise Exception(f"Illegal number of cells in unit: {len(cells)}.")
+            raise SudokuException(f"Illegal number of cells in unit: {len(cells)}.")
         return cells
 
     def get_cell(self, key):
@@ -53,7 +59,7 @@ class Unit(object):
             if unit != self and unit.__cell_keys[0][3:4] == row_num_of_block_unit:
                 horizontal_neighbours.append(unit)
         if len(horizontal_neighbours) != 2:
-            raise Exception("Unexpected number of horizontal neighbour block units.")
+            raise SudokuException("Unexpected number of horizontal neighbour block units.")
         return horizontal_neighbours
 
     def get_vertical_neighbours(self):
@@ -67,7 +73,7 @@ class Unit(object):
             if unit != self and unit.__cell_keys[0][1:2] == col_num_of_block_unit:
                 vertical_neighbours.append(unit)
         if len(vertical_neighbours) != 2:
-            raise Exception("Unexpected number of vertical neighbour block units.")
+            raise SudokuException("Unexpected number of vertical neighbour block units.")
         return vertical_neighbours
 
     def is_solved(self):
@@ -117,7 +123,7 @@ class Unit(object):
             if cell.is_solved():
                 solved_value = cell.get_solution()
                 if solved_value in solved_values:
-                    raise Exception(f"Value {solved_value} not unique in unit.")
+                    raise SudokuException(f"Value {solved_value} not unique in unit.")
                 solved_values.append(solved_value)
 
     def __get_keys_of_cells_with_value(self, value):
@@ -127,4 +133,22 @@ class Unit(object):
             if self.get_cell(key).has_possible_value(value):
                 keys.append(key)
         return keys
+
+    @staticmethod
+    def __validate_block_keys(cell_keys):
+        if len(cell_keys) != 9:
+            raise SudokuException(f"Not a valid block: {cell_keys}.")
+        # TODO: check individual keys
+
+    @staticmethod
+    def __validate_row_keys(cell_keys):
+        if len(cell_keys) != 9:
+            raise SudokuException(f"Not a valid row: {cell_keys}.")
+        # TODO: check individual keys
+
+    @staticmethod
+    def __validate_column_keys(cell_keys):
+        if len(cell_keys) != 9:
+            raise SudokuException(f"Not a valid column: {cell_keys}.")
+        # TODO: check individual keys
 

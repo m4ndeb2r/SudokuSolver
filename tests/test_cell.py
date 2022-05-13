@@ -1,6 +1,7 @@
 import unittest
 
-from sudoku.cell import Cell
+from cell import Cell
+from exceptions import SudokuException
 
 
 class TestCell(unittest.TestCase):
@@ -16,7 +17,7 @@ class TestCell(unittest.TestCase):
         self.assertFalse(self.cell.is_solved(), "Expected cell NOT to be solved.")
         try:
             self.cell.validate()
-        except Exception:
+        except SudokuException:
             self.fail("Expected cell to be valid after initialisation.")
 
     def test_solve_by_set_value(self):
@@ -25,9 +26,9 @@ class TestCell(unittest.TestCase):
         self.assertTrue(self.cell.is_solved(), "Expected cell NOT to be solved.")
 
     def test_set_value_exception(self):
-        with self.assertRaises(Exception):
+        with self.assertRaises(SudokuException):
             self.cell.set_value(0)
-        with self.assertRaises(Exception):
+        with self.assertRaises(SudokuException):
             self.cell.set_value('10')
         with self.assertRaises(ValueError):
             self.cell.set_value('a')
@@ -37,7 +38,7 @@ class TestCell(unittest.TestCase):
         for i in range(1, 9):
             self.cell.remove_possible_value(i)
         self.assertTrue(self.cell.is_solved(), "Expected cell to be solved.")
-        with self.assertRaises(Exception):
+        with self.assertRaises(SudokuException):
             self.cell.remove_possible_value(9)
 
     def test_solve_by_removing_possible_values(self):
@@ -46,10 +47,19 @@ class TestCell(unittest.TestCase):
         self.assertFalse(self.cell.is_solved(), "Expected cell NOT to be solved.")
         self.cell.remove_possible_values([7, 8])
         self.assertTrue(self.cell.is_solved(), "Expected cell to be solved.")
-        with self.assertRaises(Exception):
+        with self.assertRaises(SudokuException):
             self.cell.remove_possible_values([9])
 
     def test_get_solution(self):
         self.assertIsNone(self.cell.get_solution(), "Expected solution to be 'None'.")
         self.cell.set_value(6)
         self.assertEqual(self.cell.get_solution(), 6, "Expected solution to be 6 (numerical).")
+
+    def test_to_string(self):
+        self.assertEqual(self.cell.to_string(), " . ")
+        self.cell.set_value(5)
+        self.assertEqual(self.cell.to_string(), " 5 ")
+
+
+if __name__ == '__main__':
+    unittest.main()

@@ -1,3 +1,6 @@
+from exceptions import SudokuException
+
+
 class BidirectionalBlockSolver(object):
 
     @staticmethod
@@ -77,7 +80,7 @@ class BidirectionalBlockSolver(object):
             # Solve the cell on index idx (and raise an error if that cell was previously solved;
             # this should NEVER be the case).
             if unit.get_cells()[idx].is_solved():
-                raise Exception("Unexpected program error: attempting to solve a previously solved cell.")
+                raise SudokuException("Unexpected program error: attempting to solve a previously solved cell.")
             unit.get_cells()[idx].set_value(value)
             updated = True
 
