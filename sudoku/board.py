@@ -106,3 +106,13 @@ class Board(object):
             for x in range(1, 10):
                 print(self.__cells[f"x{x}y{y}"].to_string(), end='')
             print('')
+
+    # Prints several boards to the console, next to each other.
+    # TODO ... For future use (enable the user to pick a preset from one of the boards ...
+    @staticmethod
+    def print_multiple_boards(boards):
+        for y in range(1, 10):
+            for x in range(1, 10):
+                for board in boards:
+                    print(board.__cells[f"x{x}y{y}"].to_string(), end='')
+            print('    ')
