@@ -1,9 +1,9 @@
 class SingleUnitSolver(object):
 
+    # Attempts to solve the specified unit internally.
+    # Returns True if any cell was changed, or False otherwise.
     @staticmethod
     def solve(unit):
-        """Attempts to solve the specified unit internally.
-        Returns True if any cell was changed, or False otherwise."""
         updated = False
         if not unit.is_solved():
             # Gather removable values

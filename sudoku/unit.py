@@ -17,24 +17,24 @@ class Unit(object):
         self.__cell_keys = cell_keys
         self.__type = type
 
+    # Returns if the unit is a block unit.
     def is_block_unit(self):
-        """Returns if the unit is a block unit."""
         return self.__type == "block"
 
+    # Returns if the unit is a row unit.
     def is_row_unit(self):
-        """Returns if the unit is a row unit."""
         return self.__type == "row"
 
+    # Returns if the unit is a column unit.
     def is_column_unit(self):
-        """Returns if the unit is a column unit."""
         return self.__type == "column"
 
+    # Returns the keys referring to the cells in the unit as a list.
     def get_cell_keys(self):
-        """Returns the keys referring to the cells in the unit as a list."""
         return self.__cell_keys
 
+    # Returns the cells in the unit as a list.
     def get_cells(self):
-        """Returns the cells in the unit as a list."""
         cells = []
         for key in self.__cell_keys:
             cells.append(self.__board.get_cell(key))
@@ -42,16 +42,16 @@ class Unit(object):
             raise SudokuException(f"Illegal number of cells in unit: {len(cells)}.")
         return cells
 
+    # Returns the cell represented by the specified key, if present in this unit.
+    # If not present in the unit, None is returned.
     def get_cell(self, key):
-        """Returns the cell represented by the specified key, if present in this unit. If not
-        present in the unit, None is returned."""
         if key in self.__cell_keys:
             return self.__board.get_cell(key)
         return None
 
+    # Returns the two block units at the left and/or right from the current block unit.
+    # If the current unit is not a block unit, an empty list is returned.
     def get_horizontal_neighbours(self):
-        """Returns the two block units at the left and/or right from the current block unit.
-        If the current unit is not a block unit, an empty list is returned."""
         if not self.is_block_unit():
             return []
         horizontal_neighbours = []
@@ -63,9 +63,9 @@ class Unit(object):
             raise SudokuException("Unexpected number of horizontal neighbour block units.")
         return horizontal_neighbours
 
+    # Returns the two block units at on top and/or below the current block unit.
+    # If the current unit is not a block unit, an empty list is returned.
     def get_vertical_neighbours(self):
-        """Returns the two block units at on top and/or below the current block unit.
-        If the current unit is not a block unit, an empty list is returned."""
         if not self.is_block_unit():
             return []
         vertical_neighbours = []
@@ -77,22 +77,23 @@ class Unit(object):
             raise SudokuException("Unexpected number of vertical neighbour block units.")
         return vertical_neighbours
 
+    # Determines if a unit is solved, e.g. all its cells are solved.
     def is_solved(self):
-        """Determines if a unit is solved, e.g. all its cells are solved."""
         for cell in self.get_cells():
             if not cell.is_solved():
                 return False
         return True
 
+    # Determines if a value within a unit is solved, e.g. the unit contains a
+    # cell that is solved with the specified value.
     def has_solved_cell_with_value(self, value):
-        """Determines if a value within a unit is solved, e.g. the unit contains a
-        cell that is solved with the specified value."""
         for cell in self.get_cells():
             if cell.is_solved() and cell.has_possible_value(value):
                 return True
         return False
 
     def get_distinct_row_containing_possible_val(self, value):
+        # Get the keys of all cells in the unit that have the specified possible value
         keys = self.__get_keys_of_cells_with_value(value)
         # Not found? Return None
         if len(keys) == 0:
@@ -105,6 +106,7 @@ class Unit(object):
         return (int(keys[0][3:4]) - 1) % 3
 
     def get_distinct_column_containing_possible_val(self, value):
+        # Get the keys of all cells in the unit that have the specified possible value
         keys = self.__get_keys_of_cells_with_value(value)
         # Not found? Return None
         if len(keys) == 0:
@@ -116,8 +118,8 @@ class Unit(object):
                 return None
         return (int(keys[0][1:2]) - 1) % 3
 
+    # Validates the unit. Checks for any illegal characters or illegal combinations.
     def validate(self):
-        """Validates the unit. Checks for any illegal characters or illegal combinations."""
         solved_values = []
         for cell in self.get_cells():
             cell.validate()
@@ -127,8 +129,8 @@ class Unit(object):
                     raise SudokuException(f"Value {solved_value} not unique in unit.")
                 solved_values.append(solved_value)
 
+    # Gathers all keys referring to cells containing the specified value as a possible value.
     def __get_keys_of_cells_with_value(self, value):
-        """Gathers all keys referring to cells containing the specified value as a possible value."""
         keys = []
         for key in self.get_cell_keys():
             if self.get_cell(key).has_possible_value(value):

@@ -46,8 +46,8 @@ class Board(object):
                 x += 3
             y += 3
 
+    # Returns all block units on the board.
     def get_block_units(self):
-        """Returns all block units on the board."""
         block_units = []
         for unit in self.__units:
             if unit.is_block_unit():
@@ -56,26 +56,26 @@ class Board(object):
             raise SudokuException(f"Unexpected number of block units on the board: {len(block_units)}.")
         return block_units
 
+    # Returns the cell with the specified key.
     def get_cell(self, key):
-        """Returns the cell with the specified key."""
         return self.__cells[key]
 
+    # Sets a definitive value for the cell identified by the specified key.
     def set_cell_value(self, key, value):
-        """Sets a definitive value for the cell identified by the specified key."""
         self.__cells[key].set_value(value)
 
+    # Determines if all the cells on the board are solved.
     def is_solved(self):
-        """Determines if all the cells on the board are solved."""
         cells = list(self.__cells.values())
         for cell in cells:
             if not cell.is_solved():
                 return False
         return True
 
+    # Attempts to solve all the units (blocks, rows, columns) on the board.
+    # Solving will be repeated as long as one or more cells are solved by the
+    # attempts.
     def solve(self):
-        """Attempts to solve all the units (blocks, rows, columns) on the board.
-        Solving will be repeated as long as one or more cells are solved by the
-        attempts."""
         continue_solving = not self.is_solved()
         while continue_solving:
             updated = False
@@ -95,13 +95,13 @@ class Board(object):
                     updated = SingleUnitSolver.solve(unit) or updated
             continue_solving = updated and not self.is_solved()
 
+    # Validates the board. Checks for any illegal characters or illegal combinations.
     def validate(self):
-        """Validates the board. Checks for any illegal characters or illegal combinations"""
         for unit in self.__units:
             unit.validate()
 
+    # Prints a board representation to the console.
     def print(self):
-        """Prints a board representation to the console."""
         for y in range(1, 10):
             for x in range(1, 10):
                 print(self.__cells[f"x{x}y{y}"].to_string(), end='')

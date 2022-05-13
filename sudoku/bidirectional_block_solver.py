@@ -3,10 +3,10 @@ from exceptions import SudokuException
 
 class BidirectionalBlockSolver(object):
 
+    # Attempts to solve the specified unit by comparing it to its horizontal and vertical
+    # neighbour block units. Returns True if any cell was changed, or False otherwise.
     @staticmethod
     def solve(unit):
-        """Attempts to solve the specified unit by comparing it to its horizontal and vertical neighbour block units.
-        Returns True if any cell was changed, or False otherwise."""
         updated = False
         if not unit.is_block_unit():
             return updated
