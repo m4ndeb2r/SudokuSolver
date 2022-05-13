@@ -3,6 +3,7 @@ from exceptions import SudokuException
 
 class Unit(object):
     def __init__(self, the_board, cell_keys, type):
+        Unit.__validate_unit_keys(cell_keys)
         if type == "block":
             Unit.__validate_block_keys(cell_keys)
         elif type == "row":
@@ -135,20 +136,43 @@ class Unit(object):
         return keys
 
     @staticmethod
-    def __validate_block_keys(cell_keys):
+    def __validate_unit_keys(cell_keys):
         if len(cell_keys) != 9:
-            raise SudokuException(f"Not a valid block: {cell_keys}.")
-        # TODO: check individual keys
+            raise SudokuException(f"Not a valid unit: {cell_keys}.")
+        valid_keys = []
+        for x in range(1, 10):
+            for y in range(1, 10):
+                valid_keys.append(f"x{x}y{y}")
+        for key in cell_keys:
+            if key not in valid_keys:
+                raise SudokuException(f"Not a valid unit; one or more keys not valid: {cell_keys}.")
+
+    @staticmethod
+    def __validate_block_keys(cell_keys):
+        for i in [0, 3, 6]:
+            row_keys = cell_keys[i: i + 3]
+            try:
+                Unit.__validate_row_keys(row_keys)
+            except SudokuException:
+                raise SudokuException(f"Not a valid block; cell keys in row do not align {row_keys}")
+        for i in range(0, 3):
+            column_keys = [cell_keys[i], cell_keys[i + 1], cell_keys[i + 2]]
+            try:
+                Unit.__validate_column_keys(column_keys)
+            except SudokuException:
+                raise SudokuException(f"Not a valid block; cell keys in column do not align {column_keys}")
 
     @staticmethod
     def __validate_row_keys(cell_keys):
-        if len(cell_keys) != 9:
-            raise SudokuException(f"Not a valid row: {cell_keys}.")
-        # TODO: check individual keys
+        y = cell_keys[0][3:4]
+        for key in cell_keys:
+            if key[3:4] != y:
+                raise SudokuException(f"Not a valid row; cell keys do not align: {cell_keys}.")
 
     @staticmethod
     def __validate_column_keys(cell_keys):
-        if len(cell_keys) != 9:
-            raise SudokuException(f"Not a valid column: {cell_keys}.")
-        # TODO: check individual keys
+        x = cell_keys[0][1:2]
+        for key in cell_keys:
+            if key[1:2] != x:
+                raise SudokuException(f"Not a valid column; cell keys do not align: {cell_keys}.")
 
