@@ -156,7 +156,7 @@ class Unit(object):
             except SudokuException:
                 raise SudokuException(f"Not a valid block; cell keys in row do not align {row_keys}")
         for i in range(0, 3):
-            column_keys = [cell_keys[i], cell_keys[i + 1], cell_keys[i + 2]]
+            column_keys = [cell_keys[i], cell_keys[i + 3], cell_keys[i + 6]]
             try:
                 Unit.__validate_column_keys(column_keys)
             except SudokuException:
