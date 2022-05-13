@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import Mock
+from unittest.mock import Mock, call
 
 from unit import Unit
 from exceptions import SudokuException
@@ -99,6 +99,39 @@ class TestUnit(unittest.TestCase):
         ]
         unit = Unit(self.__board_mock, cell_keys, "row")
         self.assertEqual(unit.get_cell_keys(), cell_keys)
+
+    def test_get_cells(self):
+        # What we put in
+        cell_keys = [
+            "x1y9", "x2y9", "x3y9",
+            "x4y9", "x5y9", "x6y9",
+            "x7y9", "x8y9", "x9y9",
+        ]
+        # The result we want returned
+        returned_cells = [
+            Mock(), Mock(), Mock(),
+            Mock(), Mock(), Mock(),
+            Mock(), Mock(), Mock()
+        ]
+        # The args_list in the order in which we expect the get_cells method to be called
+        expected_call_args_list = [
+            call("x1y9",), call("x2y9",), call("x3y9",),
+            call("x4y9",), call("x5y9",), call("x6y9", ),
+            call("x7y9",), call("x8y9",), call("x9y9",),
+        ]
+
+        # Configure a Board mock who's method get_cells returns the list of cell mocks above
+        board_mock = Mock()
+        attrs = {'get_cell.side_effect': returned_cells}
+        board_mock.configure_mock(**attrs)
+
+        # Initialise the unit
+        unit = Unit(board_mock, cell_keys, "row")
+
+        # Execute & verify
+        returned_cells = unit.get_cells()
+        self.assertEqual(returned_cells, returned_cells)
+        self.assertEqual(board_mock.get_cell.call_args_list, expected_call_args_list)
 
 
 if __name__ == '__main__':
