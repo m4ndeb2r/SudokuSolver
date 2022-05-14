@@ -1,8 +1,8 @@
 import unittest
 from unittest.mock import Mock, call
 
-from unit import Unit
-from exceptions import SudokuException
+from board.unit import Unit
+from board.board_exception import BoardException
 
 
 class TestUnit(unittest.TestCase):
@@ -15,12 +15,12 @@ class TestUnit(unittest.TestCase):
             "x4y2", "x5y2", "x6y2",
             "x4y3", "x5y3", "x6y3",
         ]
-        with self.assertRaises(SudokuException) as context:
+        with self.assertRaises(BoardException) as context:
             Unit(self.__board_mock, cell_keys, "wrong_type")
         self.assertTrue("Illegal unit type: 'wrong_type'." in str(context.exception))
 
     def test_init_invalid_nr_of_cell_keys(self):
-        with self.assertRaises(SudokuException) as context:
+        with self.assertRaises(BoardException) as context:
             Unit(self.__board_mock, ["x1y7", "x1y8", "x1y9"], "block")
         self.assertTrue("Not a valid unit: ['x1y7', 'x1y8', 'x1y9']." in str(context.exception))
 
@@ -30,7 +30,7 @@ class TestUnit(unittest.TestCase):
             "x0y2", "x0y2", "x0y2",
             "x0y3", "x0y3", "x0y3",
         ]
-        with self.assertRaises(SudokuException) as context:
+        with self.assertRaises(BoardException) as context:
             Unit(self.__board_mock, invalid_cell_keys, "column")
         self.assertTrue("Not a valid unit; one or more keys not valid: " in str(context.exception))
 
@@ -49,7 +49,7 @@ class TestUnit(unittest.TestCase):
             "x4y1", "x5y1", "x6y1",
             "x7y1", "x8y1", "x9y1",
         ]
-        with self.assertRaises(SudokuException) as context:
+        with self.assertRaises(BoardException) as context:
             Unit(self.__board_mock, cell_keys_for_a_row, "block")
         self.assertTrue("Not a valid block" in str(context.exception))
 
@@ -68,7 +68,7 @@ class TestUnit(unittest.TestCase):
             "x1y4", "x1y5", "x1y6",
             "x1y7", "x1y8", "x1y9",
         ]
-        with self.assertRaises(SudokuException) as context:
+        with self.assertRaises(BoardException) as context:
             Unit(self.__board_mock, cell_keys_for_a_column, "row")
         self.assertTrue("Not a valid row; cell keys do not align" in str(context.exception))
 
@@ -87,7 +87,7 @@ class TestUnit(unittest.TestCase):
             "x4y9", "x5y9", "x6y9",
             "x7y9", "x8y9", "x9y9",
         ]
-        with self.assertRaises(SudokuException) as context:
+        with self.assertRaises(BoardException) as context:
             Unit(self.__board_mock, cell_keys_for_a_row, "column")
         self.assertTrue("Not a valid column; cell keys do not align" in str(context.exception))
 

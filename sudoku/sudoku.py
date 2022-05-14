@@ -1,7 +1,7 @@
 import random
 
-from board import Board
-from exceptions import SudokuException
+from board.board import Board
+from sudoku_exception import SudokuException
 
 choice = '0'
 while choice not in ['1', '2', '3']:

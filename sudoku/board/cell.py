@@ -1,4 +1,4 @@
-from exceptions import SudokuException
+from board.board_exception import BoardException
 
 
 class Cell(object):
@@ -12,10 +12,10 @@ class Cell(object):
     def validate(self):
         length = len(self.__possible_values)
         if length < 1 or length > 9:
-            raise SudokuException(f"Number of possible values for this cell is incorrect ({length}).")
+            raise BoardException(f"Number of possible values for this cell is incorrect ({length}).")
         for possible_value in self.__possible_values:
             if possible_value not in range(1, 10):
-                raise SudokuException(f"Value {possible_value} is not a valid value for this cell.")
+                raise BoardException(f"Value {possible_value} is not a valid value for this cell.")
 
     # Returns if the specified value is a possible solution for the cell.
     def has_possible_value(self, value):
@@ -26,7 +26,7 @@ class Cell(object):
     def remove_possible_value(self, value):
         if value in self.__possible_values:
             if len(self.__possible_values) == 1:
-                raise SudokuException("Unexpected program error: attempting to remove a value from a solved cell.")
+                raise BoardException("Unexpected program error: attempting to remove a value from a solved cell.")
             self.__possible_values.remove(value)
             return True
         return False
@@ -44,7 +44,7 @@ class Cell(object):
     def set_value(self, value):
         int_value = int(value)
         if int_value < 1 or int_value > 9:
-            raise SudokuException("Cell can only contain values in range 1 to 9.")
+            raise BoardException("Cell can only contain values in range 1 to 9.")
         self.__possible_values = [int(value)]
 
     # Determines if the cell is solved, e.g. has a single definitive value.

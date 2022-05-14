@@ -1,10 +1,10 @@
-from unit import Unit
-from cell import Cell
-from single_unit_solver import SingleUnitSolver
-from vertical_block_solver import VerticalBlockSolver
-from horizontal_block_solver import HorizontalBlockSolver
-from bidirectional_block_solver import BidirectionalBlockSolver
-from exceptions import SudokuException
+from board.board_exception import BoardException
+from solver.bidirectional_block_solver import BidirectionalBlockSolver
+from solver.horizontal_block_solver import HorizontalBlockSolver
+from solver.single_unit_solver import SingleUnitSolver
+from solver.vertical_block_solver import VerticalBlockSolver
+from board.unit import Unit
+from board.cell import Cell
 
 
 class Board(object):
@@ -53,7 +53,7 @@ class Board(object):
             if unit.is_block_unit():
                 block_units.append(unit)
         if len(block_units) != 9:
-            raise SudokuException(f"Unexpected number of block units on the board: {len(block_units)}.")
+            raise BoardException(f"Unexpected number of block units on the board: {len(block_units)}.")
         return block_units
 
     # Returns the cell with the specified key.

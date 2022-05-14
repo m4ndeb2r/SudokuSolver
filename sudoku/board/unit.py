@@ -1,4 +1,4 @@
-from exceptions import SudokuException
+from board.board_exception import BoardException
 
 
 class Unit(object):
@@ -11,7 +11,7 @@ class Unit(object):
         elif type == "column":
             Unit.__validate_column_keys(cell_keys)
         else:
-            raise SudokuException(f"Illegal unit type: '{type}'.")
+            raise BoardException(f"Illegal unit type: '{type}'.")
 
         self.__board = the_board
         self.__cell_keys = cell_keys
@@ -39,7 +39,7 @@ class Unit(object):
         for key in self.__cell_keys:
             cells.append(self.__board.get_cell(key))
         if len(cells) != 9:
-            raise SudokuException(f"Illegal number of cells in unit: {len(cells)}.")
+            raise BoardException(f"Illegal number of cells in unit: {len(cells)}.")
         return cells
 
     # Returns the cell represented by the specified key, if present in this unit.
@@ -60,7 +60,7 @@ class Unit(object):
             if unit != self and unit.__cell_keys[0][3:4] == row_num_of_block_unit:
                 horizontal_neighbours.append(unit)
         if len(horizontal_neighbours) != 2:
-            raise SudokuException("Unexpected number of horizontal neighbour block units.")
+            raise BoardException("Unexpected number of horizontal neighbour block units.")
         return horizontal_neighbours
 
     # Returns the two block units at on top and/or below the current block unit.
@@ -74,7 +74,7 @@ class Unit(object):
             if unit != self and unit.__cell_keys[0][1:2] == col_num_of_block_unit:
                 vertical_neighbours.append(unit)
         if len(vertical_neighbours) != 2:
-            raise SudokuException("Unexpected number of vertical neighbour block units.")
+            raise BoardException("Unexpected number of vertical neighbour block units.")
         return vertical_neighbours
 
     # Determines if a unit is solved, e.g. all its cells are solved.
@@ -126,7 +126,7 @@ class Unit(object):
             if cell.is_solved():
                 solved_value = cell.get_solution()
                 if solved_value in solved_values:
-                    raise SudokuException(f"Value {solved_value} not unique in unit.")
+                    raise BoardException(f"Value {solved_value} not unique in unit.")
                 solved_values.append(solved_value)
 
     # Gathers all keys referring to cells containing the specified value as a possible value.
@@ -140,14 +140,14 @@ class Unit(object):
     @staticmethod
     def __validate_unit_keys(cell_keys):
         if len(cell_keys) != 9:
-            raise SudokuException(f"Not a valid unit: {cell_keys}.")
+            raise BoardException(f"Not a valid unit: {cell_keys}.")
         valid_keys = []
         for x in range(1, 10):
             for y in range(1, 10):
                 valid_keys.append(f"x{x}y{y}")
         for key in cell_keys:
             if key not in valid_keys:
-                raise SudokuException(f"Not a valid unit; one or more keys not valid: {cell_keys}.")
+                raise BoardException(f"Not a valid unit; one or more keys not valid: {cell_keys}.")
 
     @staticmethod
     def __validate_block_keys(cell_keys):
@@ -155,26 +155,26 @@ class Unit(object):
             row_keys = cell_keys[i: i + 3]
             try:
                 Unit.__validate_row_keys(row_keys)
-            except SudokuException:
-                raise SudokuException(f"Not a valid block; cell keys in row do not align {row_keys}")
+            except BoardException:
+                raise BoardException(f"Not a valid block; cell keys in row do not align {row_keys}")
         for i in range(0, 3):
             column_keys = [cell_keys[i], cell_keys[i + 3], cell_keys[i + 6]]
             try:
                 Unit.__validate_column_keys(column_keys)
-            except SudokuException:
-                raise SudokuException(f"Not a valid block; cell keys in column do not align {column_keys}")
+            except BoardException:
+                raise BoardException(f"Not a valid block; cell keys in column do not align {column_keys}")
 
     @staticmethod
     def __validate_row_keys(cell_keys):
         y = cell_keys[0][3:4]
         for key in cell_keys:
             if key[3:4] != y:
-                raise SudokuException(f"Not a valid row; cell keys do not align: {cell_keys}.")
+                raise BoardException(f"Not a valid row; cell keys do not align: {cell_keys}.")
 
     @staticmethod
     def __validate_column_keys(cell_keys):
         x = cell_keys[0][1:2]
         for key in cell_keys:
             if key[1:2] != x:
-                raise SudokuException(f"Not a valid column; cell keys do not align: {cell_keys}.")
+                raise BoardException(f"Not a valid column; cell keys do not align: {cell_keys}.")
 

@@ -1,7 +1,7 @@
 import unittest
 
-from cell import Cell
-from exceptions import SudokuException
+from board.cell import Cell
+from board.board_exception import BoardException
 
 
 class TestCell(unittest.TestCase):
@@ -17,7 +17,7 @@ class TestCell(unittest.TestCase):
         self.assertFalse(self.cell.is_solved(), "Expected cell NOT to be solved.")
         try:
             self.cell.validate()
-        except SudokuException:
+        except BoardException:
             self.fail("Expected cell to be valid after initialisation.")
 
     def test_solve_by_set_value(self):
@@ -26,9 +26,9 @@ class TestCell(unittest.TestCase):
         self.assertTrue(self.cell.is_solved(), "Expected cell NOT to be solved.")
 
     def test_set_value_exception(self):
-        with self.assertRaises(SudokuException):
+        with self.assertRaises(BoardException):
             self.cell.set_value(0)
-        with self.assertRaises(SudokuException):
+        with self.assertRaises(BoardException):
             self.cell.set_value('10')
         with self.assertRaises(ValueError):
             self.cell.set_value('a')
@@ -38,7 +38,7 @@ class TestCell(unittest.TestCase):
         for i in range(1, 9):
             self.cell.remove_possible_value(i)
         self.assertTrue(self.cell.is_solved(), "Expected cell to be solved.")
-        with self.assertRaises(SudokuException):
+        with self.assertRaises(BoardException):
             self.cell.remove_possible_value(9)
 
     def test_solve_by_removing_possible_values(self):
@@ -47,7 +47,7 @@ class TestCell(unittest.TestCase):
         self.assertFalse(self.cell.is_solved(), "Expected cell NOT to be solved.")
         self.cell.remove_possible_values([7, 8])
         self.assertTrue(self.cell.is_solved(), "Expected cell to be solved.")
-        with self.assertRaises(SudokuException):
+        with self.assertRaises(BoardException):
             self.cell.remove_possible_values([9])
 
     def test_get_solution(self):
