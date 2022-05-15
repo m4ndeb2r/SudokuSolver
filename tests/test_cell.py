@@ -22,22 +22,25 @@ class TestCell(unittest.TestCase):
 
     def test_solve_by_set_value(self):
         self.assertFalse(self.cell.is_solved(), "Expected cell NOT to be solved.")
+        self.assertEqual(len(self.cell.get_possible_values()), 9, "Expected the number of possible values to be 9.")
         self.cell.set_value(1)
         self.assertTrue(self.cell.is_solved(), "Expected cell NOT to be solved.")
+        self.assertEqual(len(self.cell.get_possible_values()), 1, "Expected the number of possible values to be 1.")
 
     def test_set_value_exception(self):
-        with self.assertRaises(BoardException):
-            self.cell.set_value(0)
-        with self.assertRaises(BoardException):
-            self.cell.set_value('10')
-        with self.assertRaises(ValueError):
-            self.cell.set_value('a')
+            with self.assertRaises(BoardException):
+                self.cell.set_value(0)
+            with self.assertRaises(BoardException):
+                self.cell.set_value('10')
+            with self.assertRaises(ValueError):
+                self.cell.set_value('a')
 
     def test_solve_by_removing_possible_value(self):
         self.assertFalse(self.cell.is_solved(), "Expected cell NOT to be solved.")
         for i in range(1, 9):
             self.cell.remove_possible_value(i)
         self.assertTrue(self.cell.is_solved(), "Expected cell to be solved.")
+        self.assertEqual(len(self.cell.get_possible_values()), 1, "Expected the number of possible values to be 1.")
         with self.assertRaises(BoardException):
             self.cell.remove_possible_value(9)
 
@@ -47,6 +50,7 @@ class TestCell(unittest.TestCase):
         self.assertFalse(self.cell.is_solved(), "Expected cell NOT to be solved.")
         self.cell.remove_possible_values([7, 8])
         self.assertTrue(self.cell.is_solved(), "Expected cell to be solved.")
+        self.assertEqual(len(self.cell.get_possible_values()), 1, "Expected the number of possible values to be 1.")
         with self.assertRaises(BoardException):
             self.cell.remove_possible_values([9])
 

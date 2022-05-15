@@ -21,6 +21,10 @@ class Cell(object):
     def has_possible_value(self, value):
         return value in self.__possible_values
 
+    # Returns if the possible values for the cell.
+    def get_possible_values(self):
+        return self.__possible_values
+
     # Removes the specified value from the list of possible values (if it exists).
     # Returns True on success, or False otherwise.
     def remove_possible_value(self, value):
