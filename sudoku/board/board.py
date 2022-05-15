@@ -1,9 +1,7 @@
+from board.block_unit import BlockUnit
 from board.board_exception import BoardException
-from solver.bidirectional_block_solver import BidirectionalBlockSolver
-from solver.horizontal_block_solver import HorizontalBlockSolver
-from solver.single_unit_solver import SingleUnitSolver
-from solver.vertical_block_solver import VerticalBlockSolver
-from board.unit import Unit
+from board.column_unit import ColumnUnit
+from board.row_unit import RowUnit
 from board.cell import Cell
 
 
@@ -24,14 +22,14 @@ class Board(object):
             cell_keys = []
             for x in range(1, 10):
                 cell_keys.append(f"x{x}y{y}")
-            self.__units.append(Unit(self, cell_keys, "row"))
+            self.__units.append(RowUnit(self, cell_keys))
 
         # Units: columns
         for x in range(1, 10):
             cell_keys = []
             for y in range(1, 10):
                 cell_keys.append(f"x{x}y{y}")
-            self.__units.append(Unit(self, cell_keys, "column"))
+            self.__units.append(ColumnUnit(self, cell_keys))
 
         # Units: blocks 3 x 3
         y = 1
@@ -42,7 +40,7 @@ class Board(object):
                 for _y in range(y, y + 3):
                     for _x in range(x, x + 3):
                         cell_keys.append(f"x{_x}y{_y}")
-                self.__units.append(Unit(self, cell_keys, "block"))
+                self.__units.append(BlockUnit(self, cell_keys))
                 x += 3
             y += 3
 
@@ -50,7 +48,7 @@ class Board(object):
     def get_block_units(self):
         block_units = []
         for unit in self.__units:
-            if unit.is_block_unit():
+            if isinstance(unit, BlockUnit):
                 block_units.append(unit)
         if len(block_units) != 9:
             raise BoardException(f"Unexpected number of block units on the board: {len(block_units)}.")
@@ -80,19 +78,7 @@ class Board(object):
         while continue_solving:
             updated = False
             for unit in self.__units:
-                updated = SingleUnitSolver.solve(unit) or updated
-            for unit in self.__units:
-                if unit.is_block_unit():
-                    updated = HorizontalBlockSolver.solve(unit) or updated
-                    updated = SingleUnitSolver.solve(unit) or updated
-            for unit in self.__units:
-                if unit.is_block_unit():
-                    updated = VerticalBlockSolver.solve(unit) or updated
-                    updated = SingleUnitSolver.solve(unit) or updated
-            for unit in self.__units:
-                if unit.is_block_unit():
-                    updated = BidirectionalBlockSolver.solve(unit) or updated
-                    updated = SingleUnitSolver.solve(unit) or updated
+                updated = unit.solve() or updated
             continue_solving = updated and not self.is_solved()
 
     # Validates the board. Checks for any illegal characters or illegal combinations.
