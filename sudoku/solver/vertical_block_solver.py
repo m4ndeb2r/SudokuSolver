@@ -5,8 +5,6 @@ class VerticalBlockSolver(object):
     @staticmethod
     def solve(unit):
         updated = False
-        if not unit.is_block_unit():
-            return updated
         if unit.is_solved():
             return updated
 
