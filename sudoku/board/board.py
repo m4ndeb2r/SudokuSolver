@@ -16,33 +16,9 @@ class Board(object):
 
         # Initialise units (rows, columns and blocks)
         self.__units = []
-
-        # Units: rows
-        for y in range(1, 10):
-            cell_keys = []
-            for x in range(1, 10):
-                cell_keys.append(f"x{x}y{y}")
-            self.__units.append(RowUnit(self, cell_keys))
-
-        # Units: columns
-        for x in range(1, 10):
-            cell_keys = []
-            for y in range(1, 10):
-                cell_keys.append(f"x{x}y{y}")
-            self.__units.append(ColumnUnit(self, cell_keys))
-
-        # Units: blocks 3 x 3
-        y = 1
-        while y < 10:
-            x = 1
-            while x < 10:
-                cell_keys = []
-                for _y in range(y, y + 3):
-                    for _x in range(x, x + 3):
-                        cell_keys.append(f"x{_x}y{_y}")
-                self.__units.append(BlockUnit(self, cell_keys))
-                x += 3
-            y += 3
+        self.__create_row_units()
+        self.__create_column_units()
+        self.__create_block_units()
 
     # Returns all block units on the board.
     def get_block_units(self):
@@ -80,6 +56,7 @@ class Board(object):
             for unit in self.__units:
                 updated = unit.solve() or updated
             continue_solving = updated and not self.is_solved()
+        self.validate()
 
     # Validates the board. Checks for any illegal characters or illegal combinations.
     def validate(self):
@@ -102,3 +79,33 @@ class Board(object):
                 for board in boards:
                     print(board.__cells[f"x{x}y{y}"].to_string(), end='')
             print('    ')
+
+    # Creates all block units on the board.
+    def __create_block_units(self):
+        y = 1
+        while y < 10:
+            x = 1
+            while x < 10:
+                cell_keys = []
+                for _y in range(y, y + 3):
+                    for _x in range(x, x + 3):
+                        cell_keys.append(f"x{_x}y{_y}")
+                self.__units.append(BlockUnit(self, cell_keys))
+                x += 3
+            y += 3
+
+    # Creates all row units on the board.
+    def __create_row_units(self):
+        for y in range(1, 10):
+            cell_keys = []
+            for x in range(1, 10):
+                cell_keys.append(f"x{x}y{y}")
+            self.__units.append(RowUnit(self, cell_keys))
+
+    # Creates all column units on the board.
+    def __create_column_units(self):
+        for x in range(1, 10):
+            cell_keys = []
+            for y in range(1, 10):
+                cell_keys.append(f"x{x}y{y}")
+            self.__units.append(ColumnUnit(self, cell_keys))
