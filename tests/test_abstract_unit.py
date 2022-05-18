@@ -42,7 +42,7 @@ class TestAbstractUnit(unittest.TestCase):
             "x7y9", "x8y9", "x9y9",
         ]
         # The result we want returned
-        returned_cells = [
+        expected_returned_cells = [
             Mock(), Mock(), Mock(),
             Mock(), Mock(), Mock(),
             Mock(), Mock(), Mock()
@@ -56,7 +56,7 @@ class TestAbstractUnit(unittest.TestCase):
 
         # Configure a Board mock who's method get_cells returns the list of cell mocks above
         board_mock = Mock()
-        attrs = {'get_cell.side_effect': returned_cells}
+        attrs = {'get_cell.side_effect': expected_returned_cells}
         board_mock.configure_mock(**attrs)
 
         # Initialise the unit
@@ -64,8 +64,33 @@ class TestAbstractUnit(unittest.TestCase):
 
         # Execute & verify
         returned_cells = unit.get_cells()
-        self.assertEqual(returned_cells, returned_cells)
+        self.assertEqual(returned_cells, expected_returned_cells)
         self.assertEqual(board_mock.get_cell.call_args_list, expected_call_args_list)
+
+    def test_get_cell(self):
+        # What we put in
+        cell_keys = [
+            "x1y9", "x2y9", "x3y9",
+            "x4y9", "x5y9", "x6y9",
+            "x7y9", "x8y9", "x9y9",
+        ]
+        # The result we want returned
+        expected_returned_cell = Mock()
+        # The args_list in the order in which we expect the get_cells method to be called
+        expected_call_args = call("x9y9",)
+
+        # Configure a Board mock who's method get_cells returns the list of cell mocks above
+        board_mock = Mock()
+        attrs = {'get_cell.return_value': expected_returned_cell}
+        board_mock.configure_mock(**attrs)
+
+        # Initialise the unit
+        unit = RowUnit(board_mock, cell_keys)
+
+        # Execute & verify
+        returned_cell = unit.get_cell("x9y9")
+        self.assertEqual(returned_cell, expected_returned_cell)
+        self.assertEqual(board_mock.get_cell.call_args, expected_call_args)
 
 
 if __name__ == '__main__':
