@@ -40,12 +40,8 @@ class BidirectionalBlockSolver(object):
                 # Let's finetune r_pos and/or c_pos ...
                 # First, we need copies of r_pos and c_pos to prevent concurrent modification
                 # errors below.
-                r_pos_copy = []
-                for r in r_pos:
-                    r_pos_copy.append(r)
-                c_pos_copy = []
-                for c in c_pos:
-                    c_pos_copy.append(c)
+                r_pos_copy = r_pos[:]
+                c_pos_copy = c_pos[:]
 
                 # If all cells in a block row represented by r_pos and c_pos are solved,
                 # remove the row position from r_pos.

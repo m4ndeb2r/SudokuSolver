@@ -85,12 +85,19 @@ class Board(object):
         for unit in self.__units:
             unit.validate()
 
-    # Prints a board representation to the console.
-    def print(self):
+    # Returns a string representation of the board.
+    def to_string(self):
+        string = ""
         for y in range(1, 10):
             for x in range(1, 10):
-                print(self.__cells[f"x{x}y{y}"].to_string(), end='')
-            print('')
+                string += self.__cells[f"x{x}y{y}"].to_string()
+            if y < 9:
+                string += "\n"
+        return string
+
+    # Prints a board representation to the console.
+    def print(self):
+        print(self.to_string())
 
     # Prints several boards to the console, next to each other.
     # TODO ... For future use (enable the user to pick a preset from one of the boards ...
