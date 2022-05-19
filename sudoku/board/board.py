@@ -1,13 +1,17 @@
 from board.block_unit import BlockUnit
 from board.board_exception import BoardException
+from board.cell import Cell
 from board.column_unit import ColumnUnit
 from board.row_unit import RowUnit
-from board.cell import Cell
 
 
 class Board(object):
 
-    def __init__(self):
+    # Constructor accepting a list of nine rows, each consisting of 9 characters
+    # in the set ['.', '1', '2', '3', '4', '5', '6', '7', '8', '9'], where '.'
+    # represents an unsolved cell, and any digit represents a solved cell.
+    # The input parameter is optional: when left empty, all cells will be unsolved.
+    def __init__(self, rows):
         # Initialise cells
         self.__cells = {}
         for y in range(1, 10):
@@ -19,6 +23,24 @@ class Board(object):
         self.__create_row_units()
         self.__create_column_units()
         self.__create_block_units()
+
+        # Fill in the solved cells, based on the input parameter rows.
+        if rows:
+            if len(rows) != 9:
+                raise BoardException(f"Illegal number of rows: '{len(rows)}'. Nr. of rows must be 9.")
+            for y in range(0, 9):
+                row = rows[y]
+                if len(row) != 9:
+                    raise BoardException(f"Illegal number of cells in row: '{len(row)}'. Nr. of cells must be 9.")
+                row_values = list(row)
+                for x in range(0, 9):
+                    value = row_values[x]
+                    if value not in ('.', '1', '2', '3', '4', '5', '6', '7', '8', '9'):
+                        raise BoardException(f"Illegal value for cell: '{value}'. "
+                                             "Only digits [1-9] or '.' (empty cell) are allowed.")
+                    if value != '.':
+                        self.set_cell_value(f"x{x + 1}y{y + 1}", value)
+                        self.validate()
 
     # Returns all block units on the board.
     def get_block_units(self):

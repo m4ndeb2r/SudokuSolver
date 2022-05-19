@@ -3,6 +3,8 @@ import random
 from board.board import Board
 from sudoku_exception import SudokuException
 
+board = None
+
 choice = '0'
 while choice not in ['1', '2', '3']:
     print("\n\n*** SUDOKU ***\n")
@@ -16,9 +18,6 @@ while choice not in ['1', '2', '3']:
     if choice == '3':
         print("\nBye! See you soon!")
         quit()
-
-# Create a new Sudoku board
-board = Board()
 
 if choice == '1':
     # Only one preset for now ...
@@ -108,17 +107,8 @@ if choice == '1':
 
     # Pick a random preset ...
     rows = presets[random.randint(0, len(presets) - 1)]
-
-    for row_index in range(0, 9):
-        row = rows[row_index]
-        row_values = list(row)
-        for col_index in range(0, 9):
-            value = row_values[col_index]
-            if value not in ('.', '1', '2', '3', '4', '5', '6', '7', '8', '9'):
-                raise SudokuException(f"Illegal character entered: '{value}'. Enter digits [1-9] or '.' only.")
-            if value != '.':
-                board.set_cell_value(f"x{col_index + 1}y{row_index + 1}", value)
-                board.validate()
+    # Create a new Sudoku board
+    board = Board(rows)
 
 if choice == '2':
     print("Enter initial board settings, row by row.")
@@ -138,18 +128,14 @@ if choice == '2':
 
     # Let user enter the initial settings of the board, and update the board
     # An exception is raised when illegal input is detected.
+    rows = []
     for row_index in range(0, 9):
         row = input(f"Enter row {row_index + 1}: ")
-        row_values = list(row)
-        for col_index in range(0, 9):
-            value = row_values[col_index]
-            if value not in ('.', '1', '2', '3', '4', '5', '6', '7', '8', '9'):
-                raise SudokuException(f"Illegal character entered: '{value}'. Enter digits [1-9] or '.' only.")
-            if value != '.':
-                board.set_cell_value(f"x{col_index + 1}y{row_index + 1}", value)
-                board.validate()
+        rows.append(row)
+    # Create a new Sudoku board
+    board = Board(rows)
 
-# The input seems valid. Print the initial board.
+# Print the initial board.
 print('-' * 27)
 board.print()
 

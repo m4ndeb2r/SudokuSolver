@@ -1,7 +1,7 @@
 import unittest
 
-from board.cell import Cell
 from board.board_exception import BoardException
+from board.cell import Cell
 
 
 class TestCell(unittest.TestCase):
