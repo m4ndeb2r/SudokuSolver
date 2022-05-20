@@ -14,4 +14,4 @@ To run the program:
 (Or ... you could run it from your favourite IDE. I'm using [IntelliJ IDEA](https://www.jetbrains.com/idea/).)
 
 ## Notes
-Note the program is still under construction ... Still working on the tests, and making improvements when necessary.
+I run my tests inside [IntelliJ IDEA](https://www.jetbrains.com/idea/), which works like a charm. I have not succeeded running them from the commandline, however. Not yet.

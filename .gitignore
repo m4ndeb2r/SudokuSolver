@@ -1,2 +1,4 @@
 .idea
 sudoku.iml
+.pytest_cache
+./tests/.pytest_cache

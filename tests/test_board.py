@@ -68,6 +68,7 @@ class TestBoard(unittest.TestCase):
         self.assertEqual(board.get_cell("x3y1").get_possible_values(), [7])
 
     def test_solve(self):
+        # Create a board
         initial_board = [
             '....9..16',
             '..7..6.42',
@@ -80,10 +81,12 @@ class TestBoard(unittest.TestCase):
             '8...3....'
         ]
         board = Board(initial_board)
-        board.solve()
-        self.assertTrue(board.is_solved())
 
-        # Test the solved cells:
+        # Solve it
+        board.solve()
+
+        # Test the solution:
+        self.assertTrue(board.is_solved())
         self.assertEqual(
             board.to_string(),
             " 2  4  3  8  9  5  7  1  6 \n"
