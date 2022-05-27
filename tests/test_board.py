@@ -67,6 +67,96 @@ class TestBoard(unittest.TestCase):
         self.assertEqual(board.get_cell("x2y1").get_possible_values(), [5])
         self.assertEqual(board.get_cell("x3y1").get_possible_values(), [7])
 
+    def test_clone(self):
+        # Prepare: create an original board and solve partly
+        rows = [
+            '.57....68',
+            '683......',
+            '1..896...',
+            '..846..9.',
+            '74.9..35.',
+            '3...17.46',
+            '4...5..8.',
+            '2.918.573',
+            '.35.72...'
+        ]
+        original_board = Board(rows)
+        for unit in original_board.get_block_units():
+            unit.solve()
+        # Execute:clone the original board
+        cloned_board = original_board.clone()
+        # Verify: check the clone
+        self.assertIsNot(original_board, cloned_board)
+        for y in range(1, 10):
+            for x in range(1, 10):
+                self.assertEqual(
+                    original_board.get_cell(f"x{x}y{y}").get_possible_values(),
+                    cloned_board.get_cell(f"x{x}y{y}").get_possible_values()
+                )
+
+    def test_equals(self):
+        # Prepare: create an original board and solve partly
+        rows = [
+            '.57....68',
+            '683......',
+            '1..896...',
+            '..846..9.',
+            '74.9..35.',
+            '3...17.46',
+            '4...5..8.',
+            '2.918.573',
+            '.35.72...'
+        ]
+        original_board = Board(rows)
+        cloned_board = original_board.clone()
+        # Verify: test the equals method
+        self.assertTrue(original_board.equals(cloned_board))
+        cloned_board.set_cell_value("x1y1", 9)
+        self.assertFalse(original_board.equals(cloned_board))
+
+    def test_get_first_unsolved_cell(self):
+        rows = [
+            '.57....68',
+            '683......',
+            '1..896...',
+            '..846..9.',
+            '74.9..35.',
+            '3...17.46',
+            '4...5..8.',
+            '2.918.573',
+            '.35.72...'
+        ]
+        board = Board(rows)
+        self.assertIs(board.get_first_unsolved_cell(), board.get_cell("x1y1"))
+
+        rows = [
+            '57.....68',
+            '683......',
+            '1..896...',
+            '..846..9.',
+            '74.9..35.',
+            '3...17.46',
+            '4...5..8.',
+            '2.918.573',
+            '.35.72...'
+        ]
+        board = Board(rows)
+        self.assertIs(board.get_first_unsolved_cell(), board.get_cell("x3y1"))
+
+        rows = [
+            '243895716',
+            '597316842',
+            '618247359',
+            '135672984',
+            '764189523',
+            '982453167',
+            '356728491',
+            '479561238',
+            '821934675'
+        ]
+        board = Board(rows)
+        self.assertEqual(board.get_first_unsolved_cell(), None)
+
     def test_solve(self):
         # Create a board
         initial_board = [

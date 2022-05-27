@@ -10,7 +10,8 @@ class ColumnUnit(AbstractUnit):
         # Validate if the keys constitute a valid column
         ColumnUnit.__validate_column_keys(cell_keys)
 
-    # Attempts to solve the row unit
+    # Attempts to solve the row unit. Returns True if any of its cells was
+    # changed, or False otherwise.
     def solve(self):
         return SingleUnitSolver.solve(self)
 
