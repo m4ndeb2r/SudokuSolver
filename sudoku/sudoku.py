@@ -156,8 +156,11 @@ try:
         print("\nYay!! Solved it!!")
     else:
         print("\nSorry, too hard to solve ... :(")
-except SudokuException:
-    print("\nOops! The board became invalid. Was the initial setting okay?")
+except SudokuException as se:
+    print("\nOops! The board became invalid. (Was the initial setting okay?)")
+    choice = input("Show error details? [y/n]: ")
+    if choice in ['y', 'Y']:
+        print(se)
 print('-' * 27)
 board.print()
 print('-' * 27)

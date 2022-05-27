@@ -83,7 +83,7 @@ class Board(object):
     # Returns the updated/solved board.
     # Raises a SudokuException if the board becomes invalid
     def solve(self):
-        # Solve units separtely
+        # Solve units separately
         continue_solving_units = not self.is_solved()
         while continue_solving_units:
             updated = False
@@ -139,16 +139,6 @@ class Board(object):
     # Prints a board representation to the console.
     def print(self):
         print(self.to_string())
-
-    # Prints several boards to the console, next to each other.
-    # TODO ... For future use (enable the user to pick a preset from one of the boards ...
-    @staticmethod
-    def print_multiple_boards(boards):
-        for y in range(1, 10):
-            for x in range(1, 10):
-                for board in boards:
-                    print(board.__cells[f"x{x}y{y}"].to_string(), end='')
-            print('    ')
 
     # Creates all block units on the board.
     def __create_block_units(self):
