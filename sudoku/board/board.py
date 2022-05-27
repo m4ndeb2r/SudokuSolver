@@ -3,6 +3,7 @@ from board.board_exception import BoardException
 from board.cell import Cell
 from board.column_unit import ColumnUnit
 from board.row_unit import RowUnit
+from solver.brute_force_board_solver import BruteForceBoardSolver
 
 
 class Board(object):
@@ -56,6 +57,13 @@ class Board(object):
     def get_cell(self, key):
         return self.__cells[key]
 
+    # Returns the first cell that is yet unsolved, or None if all the cells are solved.
+    def get_first_unsolved_cell(self):
+        for cell in self.__cells.values():
+            if not cell.is_solved():
+                return cell
+        return None
+
     # Sets a definitive value for the cell identified by the specified key.
     def set_cell_value(self, key, value):
         self.__cells[key].set_value(value)
@@ -70,15 +78,21 @@ class Board(object):
 
     # Attempts to solve all the units (blocks, rows, columns) on the board.
     # Solving will be repeated as long as one or more cells are solved by the
-    # attempts.
+    # attempts. If units are no longer able to solve themselves, a brute force
+    # board solver will make a recursive attempt to solve the board.
+    # Returns the updated/solved board.
+    # Raises a SudokuException if the board becomes invalid
     def solve(self):
-        continue_solving = not self.is_solved()
-        while continue_solving:
+        # Solve units separtely
+        continue_solving_units = not self.is_solved()
+        while continue_solving_units:
             updated = False
             for unit in self.__units:
                 updated = unit.solve() or updated
-            continue_solving = updated and not self.is_solved()
+            continue_solving_units = updated and not self.is_solved()
         self.validate()
+        # Solve the (rest of the) board by brute force
+        return BruteForceBoardSolver.solve(self)
 
     # Validates the board. Checks for any illegal characters or illegal combinations.
     def validate(self):
@@ -94,6 +108,33 @@ class Board(object):
             if y < 9:
                 string += "\n"
         return string
+
+    # Returns a clone (deep copy) of this board.
+    def clone(self):
+        rows = ['.........' for x in range(9)]
+        all_possible_values = [x for x in range(1, 10)]
+        clone = Board(rows)
+        for y in range(1, 10):
+            for x in range(1, 10):
+                key = f'x{x}y{y}'
+                current_cell_possible_values = self.__cells[key].get_possible_values()
+                removables = [x for x in all_possible_values if x not in current_cell_possible_values]
+                clone.__cells[key].remove_possible_values(removables)
+        clone.validate()
+        return clone
+
+    # Returns whether two boards are equal (all cells have the same possible values)
+    def equals(self, other):
+        for y in range(1, 10):
+            for x in range(1, 10):
+                self_pos_vals = self.get_cell(f'x{x}y{y}').get_possible_values()
+                other_pos_vals = other.get_cell(f'x{x}y{y}').get_possible_values()
+                if len(self_pos_vals) != len(other_pos_vals):
+                    return False
+                for i in range(0, len(self_pos_vals)):
+                    if self_pos_vals[i] != other_pos_vals[i]:
+                        return False
+        return True
 
     # Prints a board representation to the console.
     def print(self):

@@ -26,7 +26,8 @@ class BlockUnit(AbstractUnit):
         # Validate if the keys constitute a valid block
         BlockUnit.__validate_block_keys(cell_keys)
 
-    # Attempts to solve the block unit
+    # Attempts to solve the block unit. Returns True if any of its cells was
+    # changed, or False otherwise.
     def solve(self):
         updated = False
         for solver in BlockUnit.SOLVER_SEQUENCE:
